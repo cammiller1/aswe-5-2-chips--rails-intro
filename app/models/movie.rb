@@ -1,21 +1,24 @@
 class Movie < ActiveRecord::Base
   
-class Movie
-  
-  def all_ratings
+  def self.all_ratings
     return ['G','PG','PG-13','R']
   end
-  
+
   def self.with_ratings(ratings_list)
   # if ratings_list is an array such as ['G', 'PG', 'R'], retrieve all
   #  movies with those ratings
   # if ratings_list is nil, retrieve ALL movies
-    if ratings_list.nil?
+    puts "--------------------------------------------------------------------"
+    if ratings_list.nil? || ratings_list.empty?
       puts "ratings_list is nil ==> retrieve ALL movies"
-      self
+      puts "--------------------------------------------------------------------"
+      return self.all
     else
       puts "ratings_list == #{ratings_list}"
-      self.where(ratings: ratings_list)
+      puts "--------------------------------------------------------------------"
+      return self.where(rating: ratings_list)
+    end
+    
   end
-
+  
 end
