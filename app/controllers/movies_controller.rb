@@ -7,53 +7,84 @@ class MoviesController < ApplicationController
   end
   
   def index
-#     session = nil
-
-#     puts "params == #{params}"
-#
-#     if params.nil?
-#       puts "------ ERROR params is empty -----"
-#     elsif params.empty?
-#       params = session.map(&:clone) #deep copy
-#     end
-#     
-#     puts "params == #{params}"
+    
+    #2 cases
+    if params[:sort].nil? && session[:sort].nil? == false
+      redirect_to movies_path(:sort=>session[:sort])
+    elsif params[:ratings].nil? && session[:ratings].nil? == false
+      redirect_to movies_path(:ratings=>session[:ratings])
+    end
     
     @movies = Movie.all
     @ratings_to_show = []
     @all_ratings = Movie.all_ratings
     
-#     if params[:ratings].nil? || params[:ratings].empty?
-#       @ratings_to_show = @all_ratings
-#     else
+#     if params[:ratings].nil? == false
 #       @ratings_to_show = params[:ratings].keys
 #     end
     
-    if params[:ratings].nil? == false #|| params[:ratings].empty? == false
+#     session[:ratings] = @ratings_to_show #part 3
+    
+#     #Isn't this line redundant?
+#     params[:ratings] = Hash[@ratings_to_show.collect { |item| [item, '1'] } ]
+    
+     
+    if params[:ratings].nil? == false
       @ratings_to_show = params[:ratings].keys
+      session[:ratings] = @ratings_to_show #part 3
+      params[:ratings] = Hash[@ratings_to_show.collect { |item| [item, '1'] } ]
+    else
+      puts "params[:ratings] is NIL!!!! --> ${params[:ratings]}"
     end
     
-    #Isn't this line redundant?
-    params[:ratings] = Hash[@ratings_to_show.collect { |item| [item, '1'] } ]
-    
-    if params[:sort] == "title"
+
+#     #4 cases
+#     if params[:sort].nil? && if params[:ratings].nil?
+#       puts "BOTH ARE NIL"
+      
+#     elsif params[:sort].nil? == false && if params[:ratings].nil?
+#       puts "params[:rating] IS NIL"
+      
+#     elsif params[:sort].nil? && if params[:ratings].nil? == false
+#       puts "params[:sort] IS NIL"
+      
+#     elsif params[:sort].nil? == false && if params[:ratings].nil? == false
+#       puts "NEITHER ARE NIL"
+      
+#     end 
+      
+      
+    if params[:sort].nil?
+      # do nothing
+      puts "------ params[:sort] IS NIL ------"
+    elsif params[:sort] == "title"
       @movieCSS = "hilite"
       @releaseCSS = ""
       @movies = Movie.with_ratings(@ratings_to_show).order("title")
+      session[:sort] = "title" #part 3
     elsif params[:sort] == "release"
       @releaseCSS = ""
       @releaseCSS = "hilite"
       @movies = Movie.with_ratings(@ratings_to_show).order("release_date")
+      session[:sort] = "release" #part 3
     else
       @movies = Movie.with_ratings(@ratings_to_show)
       #unsorted ^^^
     end
-    
-#     session = params.map(&:clone) #deep copy
-    puts "params == #{params}"
+
+    #---
+
+#     #2 cases
+#     if params[:sort].nil? && session[:sort].nil? == false
+#       redirect_to movies_path(:sort=>session[:sort])
+#     elsif params[:ratings].nil? && session[:ratings].nil? == false
+#       redirect_to movies_path(:ratings=>session[:ratings])
+#     end
     
   end
 
+  
+  
   def new
     # default: render 'new' template
   end
