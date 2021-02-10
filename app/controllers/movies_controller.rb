@@ -7,6 +7,8 @@ class MoviesController < ApplicationController
   end
   
   def index
+#     puts "params == #{params}"
+    
     @movies = Movie.all
 
     @all_ratings = Movie.all_ratings
@@ -18,11 +20,27 @@ class MoviesController < ApplicationController
       @ratings_to_show = params[:ratings].keys
     end
     
-    puts "@ratings_to_show == #{@ratings_to_show}"
+#     puts "@ratings_to_show == #{@ratings_to_show}"
     
-    puts "movies =1= #{@movies}"
+#     puts "movies =1= #{@movies}"
     @movies = Movie.with_ratings(@ratings_to_show)
-    puts "movies =2= #{@movies}"
+#     puts "movies =2= #{@movies}"
+    
+  #------PART 2-------
+    
+    puts "params == #{params}"
+    puts "params[:sort] == #{params[:sort]}"
+    
+    if params[:sort] == "title"
+      @movieCSS = "hilite"
+      @releaseCSS = ""
+      @movies = Movie.order("title")
+    elsif params[:sort] == "release"
+      @releaseCSS = ""
+      @releaseCSS = "hilite"
+      @movies = Movie.order("release_date")
+    end
+    
     
   end
 
