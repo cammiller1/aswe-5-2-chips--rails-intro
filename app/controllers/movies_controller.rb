@@ -7,43 +7,50 @@ class MoviesController < ApplicationController
   end
   
   def index
+#     session = nil
+
+#     puts "params == #{params}"
+#
+#     if params.nil?
+#       puts "------ ERROR params is empty -----"
+#     elsif params.empty?
+#       params = session.map(&:clone) #deep copy
+#     end
+#     
 #     puts "params == #{params}"
     
     @movies = Movie.all
-
-    @all_ratings = Movie.all_ratings
     @ratings_to_show = []
+    @all_ratings = Movie.all_ratings
     
-#     puts "@ratings_to_show == #{@ratings_to_show}"
+#     if params[:ratings].nil? || params[:ratings].empty?
+#       @ratings_to_show = @all_ratings
+#     else
+#       @ratings_to_show = params[:ratings].keys
+#     end
     
-    if params[:ratings].nil? == false
+    if params[:ratings].nil? == false #|| params[:ratings].empty? == false
       @ratings_to_show = params[:ratings].keys
     end
     
-#     puts "@ratings_to_show == #{@ratings_to_show}"
-    
-#     puts "movies =1= #{@movies}"
-    @movies = Movie.with_ratings(@ratings_to_show)
-#     puts "movies =2= #{@movies}"
-    
-  #------PART 2-------
-    
-    ratings_keys_to_hash = Hash[@ratings_to_show.collect { |item| [item, '1'] } ]
-    params[:ratings] = ratings_keys_to_hash 
-    
-    puts "params == #{params}"
-#     puts "params[:sort] == #{params[:sort]}"
+    #Isn't this line redundant?
+    params[:ratings] = Hash[@ratings_to_show.collect { |item| [item, '1'] } ]
     
     if params[:sort] == "title"
       @movieCSS = "hilite"
       @releaseCSS = ""
-      @movies = Movie.order("title")
+      @movies = Movie.with_ratings(@ratings_to_show).order("title")
     elsif params[:sort] == "release"
       @releaseCSS = ""
       @releaseCSS = "hilite"
-      @movies = Movie.order("release_date")
+      @movies = Movie.with_ratings(@ratings_to_show).order("release_date")
+    else
+      @movies = Movie.with_ratings(@ratings_to_show)
+      #unsorted ^^^
     end
     
+#     session = params.map(&:clone) #deep copy
+    puts "params == #{params}"
     
   end
 
