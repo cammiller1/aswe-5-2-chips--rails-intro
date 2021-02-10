@@ -28,8 +28,11 @@ class MoviesController < ApplicationController
     
   #------PART 2-------
     
+    ratings_keys_to_hash = Hash[@ratings_to_show.collect { |item| [item, '1'] } ]
+    params[:ratings] = ratings_keys_to_hash 
+    
     puts "params == #{params}"
-    puts "params[:sort] == #{params[:sort]}"
+#     puts "params[:sort] == #{params[:sort]}"
     
     if params[:sort] == "title"
       @movieCSS = "hilite"
