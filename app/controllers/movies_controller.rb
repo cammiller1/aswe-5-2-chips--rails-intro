@@ -8,12 +8,14 @@ class MoviesController < ApplicationController
   
   def index
     
-    #2 cases
-    if params[:sort].nil? && session[:sort].nil? == false
-      redirect_to movies_path(:sort=>session[:sort])
-    elsif params[:ratings].nil? && session[:ratings].nil? == false
-      redirect_to movies_path(:ratings=>session[:ratings])
-    end
+#     session = nil
+    
+#     #2 cases
+#     if params[:sort].nil? && session[:sort].nil? == false
+#       redirect_to movies_path(:sort=>session[:sort])
+#     elsif params[:ratings].nil? && session[:ratings].nil? == false
+#       redirect_to movies_path(:ratings=>session[:ratings])
+#     end
     
     @movies = Movie.all
     @ratings_to_show = []
@@ -27,17 +29,35 @@ class MoviesController < ApplicationController
     
 #     #Isn't this line redundant?
 #     params[:ratings] = Hash[@ratings_to_show.collect { |item| [item, '1'] } ]
+
     
-     
-    if params[:ratings].nil? == false
+    
+    if params[:ratings].nil? || params[:ratings].empty?
+      @ratings_to_show = @all_ratings
+    else
       @ratings_to_show = params[:ratings].keys
       session[:ratings] = @ratings_to_show #part 3
       params[:ratings] = Hash[@ratings_to_show.collect { |item| [item, '1'] } ]
-    else
-      puts "params[:ratings] is NIL!!!! --> ${params[:ratings]}"
     end
+   
     
+    
+#     if params[:ratings].nil?
+#       params[:ratings] = Movie.all_ratings #@all_ratings
+#     end 
+    
+    
+    
+#     @ratings_to_show = params[:ratings].keys
+#     session[:ratings] = @ratings_to_show
+#     params[:ratings] = Hash[@ratings_to_show.collect { |item| [item, '1'] } ]
+    
+#     if params[:ratings].empty? # || params[:ratings].nil?
+#       @ratings_to_show = @all_ratings
+#     end
 
+    
+    
 #     #4 cases
 #     if params[:sort].nil? && if params[:ratings].nil?
 #       puts "BOTH ARE NIL"
@@ -72,7 +92,8 @@ class MoviesController < ApplicationController
       #unsorted ^^^
     end
 
-    #---
+    puts "params == #{params}"
+    puts "session == #{session}"
 
 #     #2 cases
 #     if params[:sort].nil? && session[:sort].nil? == false
