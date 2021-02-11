@@ -38,7 +38,7 @@ class MoviesController < ApplicationController
     
     
     if params[:ratings].nil? || params[:ratings].empty?
-#       @ratings_to_show = @all_ratings
+      @ratings_to_show = @all_ratings
       puts "params[:ratings].nil? || params[:ratings].empty?"
     else
       @ratings_to_show = params[:ratings].keys
