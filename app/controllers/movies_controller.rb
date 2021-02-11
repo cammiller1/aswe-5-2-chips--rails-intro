@@ -15,7 +15,8 @@ class MoviesController < ApplicationController
     if params[:sort].nil? && session[:sort].nil? == false
       params[:sort] = session[:sort]
 #       redirect_to movies_path(:sort=>session[:sort])
-    elsif params[:ratings].nil? && session[:ratings].nil? == false
+    end
+    if params[:ratings].nil? && session[:ratings].nil? == false
       params[:ratings] = session[:ratings]
 #       redirect_to movies_path(:ratings=>session[:ratings])
     end
@@ -25,7 +26,7 @@ class MoviesController < ApplicationController
     @movies = Movie.all
     @ratings_to_show = []
     @all_ratings = Movie.all_ratings
-    
+
 #     if params[:ratings].nil? == false
 #       @ratings_to_show = params[:ratings].keys
 #     end
@@ -39,13 +40,13 @@ class MoviesController < ApplicationController
     
     if params[:ratings].nil? || params[:ratings].empty?
       @ratings_to_show = @all_ratings
-      puts "params[:ratings].nil? || params[:ratings].empty?"
+#       puts "params[:ratings].nil? || params[:ratings].empty?"
     else
       @ratings_to_show = params[:ratings].keys
       params[:ratings] = Hash[@ratings_to_show.collect { |item| [item, '1'] } ]
     end
    
-    session[:ratings] = @ratings_to_show
+    session[:ratings] = params[:ratings] #@ratings_to_show
     
     
 #     if params[:ratings].nil?
@@ -107,6 +108,9 @@ class MoviesController < ApplicationController
   
   def new
     # default: render 'new' template
+    reset_session
+    params[:sort] = "release"
+    params[:ratings] = Movie.all_ratings
   end
 
   def create
