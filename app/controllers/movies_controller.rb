@@ -8,14 +8,19 @@ class MoviesController < ApplicationController
   
   def index
     
-#     session = nil
+#     reset_session
     
-#     #2 cases
-#     if params[:sort].nil? && session[:sort].nil? == false
+    # REDIRECT
+    
+    if params[:sort].nil? && session[:sort].nil? == false
+      params[:sort] = session[:sort]
 #       redirect_to movies_path(:sort=>session[:sort])
-#     elsif params[:ratings].nil? && session[:ratings].nil? == false
+    elsif params[:ratings].nil? && session[:ratings].nil? == false
+      params[:ratings] = session[:ratings]
 #       redirect_to movies_path(:ratings=>session[:ratings])
-#     end
+    end
+
+    # RATINGS
     
     @movies = Movie.all
     @ratings_to_show = []
@@ -33,13 +38,14 @@ class MoviesController < ApplicationController
     
     
     if params[:ratings].nil? || params[:ratings].empty?
-      @ratings_to_show = @all_ratings
+#       @ratings_to_show = @all_ratings
+      puts "params[:ratings].nil? || params[:ratings].empty?"
     else
       @ratings_to_show = params[:ratings].keys
-      session[:ratings] = @ratings_to_show #part 3
       params[:ratings] = Hash[@ratings_to_show.collect { |item| [item, '1'] } ]
     end
    
+    session[:ratings] = @ratings_to_show
     
     
 #     if params[:ratings].nil?
@@ -73,34 +79,27 @@ class MoviesController < ApplicationController
       
 #     end 
       
-      
-    if params[:sort].nil?
-      # do nothing
-      puts "------ params[:sort] IS NIL ------"
-    elsif params[:sort] == "title"
+    
+    # PARAMS[:SORT]
+    
+    if params[:sort] == "title"
       @movieCSS = "hilite"
       @releaseCSS = ""
       @movies = Movie.with_ratings(@ratings_to_show).order("title")
-      session[:sort] = "title" #part 3
+      session[:sort] = "title"
     elsif params[:sort] == "release"
       @releaseCSS = ""
       @releaseCSS = "hilite"
       @movies = Movie.with_ratings(@ratings_to_show).order("release_date")
-      session[:sort] = "release" #part 3
+      session[:sort] = "release"
     else
-      @movies = Movie.with_ratings(@ratings_to_show)
-      #unsorted ^^^
+      @movies = Movie.with_ratings(@ratings_to_show) #unsorted
+      session[:sort] = nil
     end
 
     puts "params == #{params}"
     puts "session == #{session}"
 
-#     #2 cases
-#     if params[:sort].nil? && session[:sort].nil? == false
-#       redirect_to movies_path(:sort=>session[:sort])
-#     elsif params[:ratings].nil? && session[:ratings].nil? == false
-#       redirect_to movies_path(:ratings=>session[:ratings])
-#     end
     
   end
 
